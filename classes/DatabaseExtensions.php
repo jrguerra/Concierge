@@ -262,11 +262,10 @@ class EventsDatabase extends Database {
 			for ($i = $time1; $i <= $time2; $i++) { 
 				$x = $row["Time_$i"];
 				if ($x != NULL) {
-				    $retVal["$i"] = $x;	
+				    $retVal[$i] = $x; // everything is numeric once again
 				}
 			}
 		}
-		
 		return $retVal;
 	}
 	
@@ -424,6 +423,43 @@ class ItineraryDatabase extends Database {
 		
 		return $retVal; // return an array of array
 		// the format of this array is $retVal[index][;Arriva]
+	}
+	
+	public static function getNextEvent($time) {
+		// returns the next event that will start or is already taking place after $time
+		// this function assumes we go from lower times to higher times!
+		$result = parent::getRows(self::$db, self::$tableName);
+		
+		while ($row = mysql_fetch_array($result)) {
+			$t = $row['Time'];
+			
+			if ($t >= $time) {
+				if ($row['eventID'] != "X") {
+					return $row['eventID'];
+				}
+			}
+		}
+		
+		return NULL;
+	}
+	
+	public static function getPrevEvent($time) {
+		// return the previous event that will start or is already taking place before this $time
+		// this function assumes we start from lower times and go to higher times!
+		$result = parent::getRows(self::$db, self::$tableName);
+		
+		$retVal = NULL;
+		while ($row = mysql_fetch_array($result)) {
+			$t = $row['Time'];
+			
+			if ($t <= $time) {
+				if ($row['eventID'] != "X") {
+					$retVal = $row['eventID'];
+				}
+			}
+		}
+		
+		return $retVal;
 	}
 	
 	

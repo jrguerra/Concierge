@@ -58,7 +58,7 @@ function sendResponse($status = 200, $body = '', $content_type = 'text/html')
 }
 
 
-include ("EventsDatabase.php");
+include ("DatabaseExtensions.php");
 
 date_default_timezone_set("America/Chicago");
 
